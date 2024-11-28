@@ -68,3 +68,74 @@ HAVING AVG(punteggio) >= (
     ) AS Totali
 )	
 ;
+
+-- 7 Elenco delle barche che non hanno mai partecipato ad una regata a “Città a scelta” 
+SELECT Distinct Nome, Barche.idbarca FROM Barche 
+JOIN partecipa on Partecipa.idbarca = Barche.idbarca
+WHERE NOT EXISTS (
+	SELECT Barche.idbarca
+	From Barche
+	JOIN regate on regate.idregata = partecipa.idregata
+	where luogo = "Bergen"
+)
+;
+-- 8 Elenco delle barche e il rispettivo numero totale di regate a cui hanno partecipato.
+-- senza subquery
+SELECT Nome, Barche.idbarca, Count(Partecipa.idRegata) AS NumeroTotaleDiRegate FROM Barche 
+JOIN partecipa on Partecipa.idbarca = Barche.idbarca
+group by Barche.idbarca
+;
+-- con subquery
+SELECT b.Nome, b.idbarca ,  (  SELECT Count(Partecipa.idRegata) 
+								FROM barche
+								JOIN partecipa on Partecipa.idbarca = Barche.idbarca
+								where Barche.idbarca = b.idbarca
+								 ) as tot
+FROM barche as b
+;
+
+
+-- 9 Elenco degli sponsor che hanno sponsorizzato solamente barche di nazionalità “Nazione a scelta”
+SELECT sponsor.nome , Sponsor.Idsponsor
+FROM sponsor
+JOIN barche on sponsor.idbarca = Barche.idbarca
+where exists(
+SELECT sponsor.idsponsor
+FROM Barche
+WHERE Barche.nazionalita = "nazionalita1"
+AND barche.idbarca = sponsor.idbarca
+)
+;
+
+-- 10 Elenco delle barche in cui è presente almeno un membro dell’equipaggio della stessa nazionalità della barca
+SELECT Nome, Barche.idbarca
+FROM barche
+WHERE EXISTS(
+SELECT equipaggio.nazionalita
+FROM equipaggio
+WHERE equipaggio.nazionalita = barche.nazionalita
+AND barche.idbarca = equipaggio.idbarca
+)
+;
+-- 11 Elenco delle barche in cui tutto l’equipaggio ha la stessa nazionalità della barca
+SELECT Nome, Barche.idbarca
+FROM barche
+WHERE NOT EXISTS(
+SELECT equipaggio.nazionalita
+FROM equipaggio
+WHERE NOT equipaggio.nazionalita = Barche.nazionalita
+AND barche.idbarca = equipaggio.idbarca
+)
+;
+-- 12 Elenco delle barche in cui tutto nessun membro dell’equipaggio ha la stessa nazionalità della barca
+SELECT Nome, Barche.idbarca
+FROM barche
+WHERE NOT EXISTS(
+SELECT equipaggio.nazionalita
+FROM equipaggio
+WHERE equipaggio.nazionalita = barche.nazionalita
+AND barche.idbarca = equipaggio.idbarca
+GROUP BY barche.idbarca
+)
+;
+

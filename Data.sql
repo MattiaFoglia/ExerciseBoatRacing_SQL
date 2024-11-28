@@ -1,5 +1,5 @@
-CREATE DATABASE Regate;
-USE Regate;
+CREATE DATABASE Regate1;
+USE Regate1;
 
 CREATE TABLE sponsor(
 idSponsor INT PRIMARY KEY NOT NULL,
@@ -94,7 +94,12 @@ VALUES
 (3, 4, 'nominativo3', '1967-11-20', 'Italia'),
 (4, 1, 'nominativo1', '2001-09-19', 'nazionalita1'),
 (5, 1, 'nominativo2', '2004-11-28', 'nazionalita2'),
-(6, 2, 'nominativo3', '1967-11-20', 'nazionalita3');
+(6, 2, 'nominativo3', '1967-11-20', 'nazionalita2');
+
+INSERT INTO equipaggio(matricola, idBarca, nominativo, dataNascita, nazionalita)
+VALUES 
+(7, 3, 'nominativo34', '1967-11-20', 'nazionalita3'),
+(8, 2, 'nominativo34', '1967-11-20', 'nazionalita2');
 
 INSERT INTO ruoli(idBarca, idRegata, matricola, ruolo)
 VALUES 
